@@ -1,0 +1,11 @@
+com.salesianostriana.dam
+com.salesianostriana.dam.configuracion
+com.salesianostriana.dam.controller
+com.salesianostriana.dam.forbean
+com.salesianostriana.dam.model
+com.salesianostriana.dam.paginacion
+com.salesianostriana.dam.repository
+com.salesianostriana.dam.seguridad
+com.salesianostriana.dam.servicios
+com.salesianostriana.dam.servicios.base
+com.salesianostriana.dam.storage

@@ -1,0 +1,64 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+<title>Socios</title>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+<link rel="stylesheet" href="../../static/css/css.css"
+	th:href="@{/css/css.css}">
+</head>
+<body>
+	<header th:replace="fragment/header.html :: header"></header>
+	<div th:replace="fragment/login.html :: login"></div>
+
+	<div class="caja" id="tabla">
+		<h1>Editar Socio:</h1>
+
+		<form th:action="@{/socios/edit/submit}" th:object="${socio}" method="post">
+			<input th:if="${socio.id != 0}" type="hidden" name="id" th:field="*{id}" /> 
+			<label for="nombreSoci"> Nombre del Socio:</label> 
+			<input type="text" class="form-control" th:field="*{nombre}" />
+			<label for="apillidos"> Apellidos:</label> 
+			<input type="text" class="form-control" th:field="*{apellidos}" /> 
+			<label for="dni"> DNI:</label> 
+			<input type="text" class="form-control"  th:field="*{dni}" />
+			<label for="cuota"> Cuota:</label>
+			<input class="form-control" type="number" step="any" name="" th:field="*{cuota}" /> 
+			<label for="email"> Email:</label> 
+			<input class="form-control" type="email" name="" th:field="*{email}" /> 
+			<label for="admin"> Administrador:</label> 
+			<input type="radio" name="si" id="radio-0" value="true" th:field="*{admin}">Si 
+			<input type="radio" name="no" id="radio-1" value="false" th:field="*{admin}">No
+			</br> 
+			<input type="hidden" name="paswword" th:field="*{password}">
+			</br> 
+			<input type="submit" class="btn btn-danger" />
+		</form>
+
+	</div>
+
+
+	<footer th:replace="fragment/footer.html :: footer"></footer>
+	<!-- Optional JavaScript -->
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
+</body>
+</html>

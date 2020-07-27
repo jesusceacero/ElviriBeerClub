@@ -1,0 +1,115 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
+
+<head>
+    <title>IngreEventos</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="../../static/css/css.css" th:href="@{/css/css.css}">
+</head>
+
+<body>
+    <header th:replace="fragment/header.html :: header"></header>
+    <div th:replace="fragment/login.html :: login"></div>
+
+    <nav class="navbar navbar-dark bg-dark pt-4">
+        <div class="col-2"></div>
+        <a class="navbar-brand" href="../plantillas/ingresosCuota.html" th:href="@{/ingresosCuota}">Ingresos Cuotas</a>
+        <a class="navbar-brand" href="../plantillas/ingresosEventos.html" th:href="@{/ingresosEventos}">Ingresos Eventos</a>
+        <a class="navbar-brand" href="../plantillas/gastos.html" th:href="@{/gastos}">Gastos</a>
+        <a class="navbar-brand" href="../plantillas/total.html" th:href="@{/total}">Total</a>
+        <div class="col-2"></div>
+    </nav>
+
+    <div class="caja" id="listCer">
+        <div class="row">
+            <div class="col-4">
+            </div>
+            <div class="col-4">
+                <h4>Ingresos Eventos</h4>
+                <table id="tabla">
+                    <thead>
+                        <tr>
+                            <th>Evento</th>
+                            <th>Reservas</th>
+                            <th>Ingresos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="evento : ${listaEventos}">
+                            <td th:text="${evento.nombre}">Red chair</td>
+                            <td th:text="${evento.socios.size()}">Red chair</td>
+                            <td th:text="${evento.socios.size() * evento.precio +'€'}">Red chair</td>
+                        </tr>
+                    </tbody>
+                    <table id="tabla" class="mb-4">
+                        <tr>
+                            <th>Total:&nbsp;&nbsp;</th>
+                            <td th:text="${totalEventos}+'€'">Cuantia</td>
+                        </tr>
+                    </table>
+                </table>
+            </div>
+            <div class="col-4"></div>
+            <div class="row">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-3">
+                <div class="form-group col-md-1">
+                    <select sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_USER')" class="form-control pagination" id="pageSizeSelect" style="min-width: 100px;">
+                        <option th:each="pageSize : ${pageSizes}" th:text="${pageSize}"
+                            th:value="${pageSize}"
+                            th:selected="${pageSize} == ${selectedPageSize}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-4" style="text-align: center;">
+                <nav aria-label="Page navigation example mx-auto">
+                    <ul th:if="${listaEventos.totalPages != 1}" class="pagination pagination-circle pg-blue">
+                        <li th:class="${listaEventos.number == 0} ? disabled" class="page-item disabled">
+                            <a th:href="@{/ingresosEventos(pageSize=${selectedPageSize}, page=1)}" class="page-link">First</a>
+                        </li>
+
+                        <li th:class="${listaEventos.number == 0} ? disabled" class="page-item disabled"></li>
+                        <a th:href="@{/ingresosEventos(pageSize=${selectedPageSize}, page=${listaEventos.number})}" class="page-link" aria-label="Previous">
+                            <span aria-hidden="true">&larr;</span>
+                        </a>
+                        </li>
+
+                        <li th:class="${listaEventos.number == (page - 1)} ? 'active pointer-disabled'" class="page-item active" th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
+                            <a th:href="@{/ingresosEventos(pageSize=${selectedPageSize}, page=${page})}" class="page-link" th:text="${page}">1</a>
+                        </li>
+
+                        <li th:class="${listaEventos.number + 1 == listaEventos.totalPages} ? disabled" class="page-item">
+                            <a th:href="@{/ingresosEventos(pageSize=${selectedPageSize}, page=${listaEventos.number + 2})}" class="page-link">&rarr;</a>
+                        </li>
+
+                        <li th:class="${listaEventos.number + 1 == listaEventos.totalPages} ? disabled" class="page-item">
+                            <a th:href="@{/ingresosEventos(pageSize=${selectedPageSize}, page=${listaEventos.totalPages})}" class="page-link">Last</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="col-4"></div>
+        </div>
+
+    </div>
+
+
+
+    <footer th:replace="fragment/footer.html :: footer"></footer>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script th:src="@{/js/appIngreEventos.js}"></script>
+</body>
+
+</html>

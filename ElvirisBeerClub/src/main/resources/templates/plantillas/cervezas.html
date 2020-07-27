@@ -1,0 +1,177 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
+
+<head>
+    <title>Cervezas</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="../../static/css/css.css" th:href="@{/css/css.css}">
+</head>
+
+<body>
+    <header th:replace="fragment/header.html :: header"></header>
+    <div th:replace="fragment/login.html :: login"></div>
+
+    <div class="row mx-auto" id="icono">
+        <div class="col-12 col-lg-4"></div>
+        <div class="col-12 col-lg-4">
+            <form action="#" th:action="@{/cervezas}" method="GET">
+                <label for="buscar"></label>
+                <input type="text" value="Buscar por Nombre" class="form-control" style="width: 60%;display: inline-block; margin-top:40px;" maxlength="" />
+                <button type="submit" class="border-0" style="display: inline-block; background: none;"><img src="/img/buscar.png" ></button>
+            </form>
+        </div>
+        <div class="col-12 col-lg-4"></div>
+    </div>
+    <div class="row" id="listCer" th:each="cerveza : ${listaCervezas}">
+        <div class="col-12 text-center">
+            <span th:text="${cerveza.nombre}"></span>
+        </div>
+        <div class="row">
+            <div class="col-3"><img id="cerve" th:src="${cerveza.foto}" class="img-responsive img-thumbnail"></div>
+
+            <div class="col-6 aling-self-center">
+                <span th:text="${cerveza.descripcion}"></span>
+                </br>
+                <span>
+                    Marca:&nbsp&nbsp<span th:text="${cerveza.marca}"></span>
+                </span>
+            </div>
+
+            <div class="col-3">
+                <div class="col-4" id="precioBlack">PVP:</br><span th:text="${#numbers.formatDecimal(cerveza.pvp, 1, 2)+ '€'}"></span></div>
+                <div class="col-4" id="precioBlack">Precio Socio:</br><span th:text="${#numbers.formatDecimal(cerveza.precioSocio, 1, 2)+ '€'}"></span></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div id="icono" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a href="#" data-toggle="modal" data-target="#delete" th:attr="data-target='#modalBorrar'+${cerveza.id}"><img src="/img/borrar.png" alt=""></a>
+                </div>
+            </div>
+            <div class="col-6">
+                <div id="icono" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a href="#" th:href="@{/cervezas/editar/{id}(id=${cerveza.id})}"><img src="/img/editar.png" alt=""></a>
+                    <!--Modal Borrar Usuario-->
+                </div>
+                <div class="modal fade" id="delete" th:id="modalBorrar+${cerveza.id}">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                                <h4 class="modal-title text-dark">¿Estás seguro?</h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                                <a th:href="@{/cervezas/borrar/{id}(id=${cerveza.id})}"><button type="button"
+											class="btn ">Eliminar</button></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3">
+            <div class="form-group col-md-1">
+                <select sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_USER')" class="form-control pagination" id="pageSizeSelect" style="min-width: 100px;">
+                    <option th:each="pageSize : ${pageSizes}" th:text="${pageSize}"
+                        th:value="${pageSize}"
+                        th:selected="${pageSize} == ${selectedPageSize}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="col-4" style="text-align: center;">
+            <nav aria-label="Page navigation example mx-auto">
+                <ul th:if="${listaCervezas.totalPages != 1}" class="pagination pagination-circle pg-blue">
+                    <li th:class="${listaCervezas.number == 0} ? disabled" class="page-item disabled">
+                        <a th:href="@{/cervezas/(pageSize=${selectedPageSize}, page=1, nombre=${param.nombre})}" class="page-link">First</a>
+                    </li>
+
+                    <li th:class="${listaCervezas.number == 0} ? disabled" class="page-item disabled"></li>
+                    <a th:href="@{/cervezas/(pageSize=${selectedPageSize}, page=${listaCervezas.number}, nombre=${param.nombre})}" class="page-link" aria-label="Previous">
+                        <span aria-hidden="true">&larr;</span>
+                    </a>
+                    </li>
+
+                    <li th:class="${listaCervezas.number == (page - 1)} ? 'active pointer-disabled'" class="page-item active" th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
+                        <a th:href="@{/cervezas/(pageSize=${selectedPageSize}, page=${page}, nombre=${param.nombre})}" class="page-link" th:text="${page}">1</a>
+                    </li>
+
+                    <li th:class="${listaCervezas.number + 1 == listaCervezas.totalPages} ? disabled" class="page-item">
+                        <a th:href="@{/cervezas/(pageSize=${selectedPageSize}, page=${listaCervezas.number + 2}, nombre=${param.nombre})}" class="page-link">&rarr;</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="col-4"></div>
+    </div>
+
+    <div class="row aling-self-center" sec:authorize="hasRole('ROLE_ADMIN')">
+        <div class="col-12">
+            <a id="icono" href="" data-toggle="modal" data-target="#add"><img src="../../static/img/add.png" th:src="@{/img/add.png}" alt=""></a><span>Añadir
+					Cerveza</span>
+        </div>
+    </div>
+
+
+
+    <!-- Modal add -->
+
+    <div class="modal" id="add">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Añadir Cerveza:</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <form th:action="@{/cervezas/add}" th:object="${cerveza}" enctype="multipart/form-data" action="/" method="POST">
+                        <div class="form-group">
+                            <input th:if="${cerveza.id != 0}" type="hidden" name="id" th:field="*{id}" />
+                            <label for="nombreCer"> Nombre de Cerveza:</label>
+                            <input type="text" class="form-control" th:field="*{nombre}" />
+                            <label for="marcaCer"> Marca de Cerveza:</label>
+                            <input type="text" class="form-control" th:field="*{marca}" />
+                            <label for="despricion"> Descripción:</label>
+                            <input type="text" class="form-control" th:field="*{descripcion}" />
+                            <label for="pvp"> PVP:</label>
+                            <input class="form-control" type="number" step="any" name="" th:field="*{pvp}" />
+                            <label for="precioSoci"> Precio:</label>
+                            <input class="form-control" type="number" step="any" name="" th:field="*{precioSocio}" />
+                        </div>
+                        </br>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="imagebutton">Imagen</label>
+                            <div class="col-md-4">
+                                <input id="file" name="file" class="input-file" type="file" />
+                            </div>
+                        </div>
+                        <input type="submit" class="btn btn-danger" name="enviar" value="Guardar" />
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <footer th:replace="fragment/footer.html :: footer"></footer>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script th:src="@{/js/appCervezas.js}"></script>
+</body>
+
+</html>

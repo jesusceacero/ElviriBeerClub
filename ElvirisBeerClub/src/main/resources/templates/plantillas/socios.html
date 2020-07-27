@@ -1,0 +1,180 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
+
+<head>
+    <title>Socios</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="../../static/css/css.css" th:href="@{/css/css.css}">
+</head>
+
+<body>
+    <header th:replace="fragment/header.html :: header"></header>
+    <div th:replace="fragment/login.html :: login"></div>
+
+    <div id="listCer">
+        <div class="row mx-auto" id="icono">
+            <div class="col-12 col-lg-4"></div>
+            <div class="col-12 col-lg-4">
+                <form th:action="@{/socios}" method="GET">
+                    <label for="buscar"></label>
+                    <input type="text" placeholder="Nombre, Apellidos o Email" class="form-control" style="width: 65%;display: inline-block; margin-top:40px;" />
+                    <button type="submit" class="border-0" style="display: inline-block; background: none;"><img
+                            src="/img/buscar.png"></button>
+                </form>
+            </div>
+            <div class="col-12 col-lg-4"></div>
+        </div>
+        <h1>Listado de socios.</h1>
+        <table id="tabla" class="mx-auto mb-4">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellidos</th>
+                    <th>Email</th>
+                    <th>Fecha Alta</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="socio : ${listaSocios}">
+                    <td th:text="${socio.nombre}"></td>
+                    <td th:text="${socio.apellidos}"></td>
+                    <td th:text="${socio.email}"></td>
+                    <td th:text="${socio.fechaAlta}"></td>
+                    <td id="icono">
+                        <a href="#" data-toggle="modal" data-target="#delete" th:attr="data-target='#modalBorrar'+${socio.id}"><img src="/img/borrar.png" alt=""></a>
+                        <a href="#" th:href="@{/socios/editar/{id}(id=${socio.id})}"><img src="/img/editar.png" alt=""></a>
+                    </td>
+                    <!--Modal Borrar Usuario-->
+
+                    <div class="modal fade" id="delete" th:id="modalBorrar+${socio.id}">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title text-dark">¿Estás seguro?</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                    <a th:href="@{/socios/borrar/{id}(id=${socio.id})}"><button type="button"
+                                            class="btn ">Eliminar</button></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </tr>
+            </tbody>
+        </table>
+        <div class="row"></div>
+
+        <div class="row">
+            <div class="col-3">
+                <div class="form-group col-md-1">
+                    <select class="form-control pagination" id="pageSizeSelect" style="min-width: 100px;">
+                        <option th:each="pageSize : ${pageSizes}" th:text="${pageSize}"
+                            th:value="${pageSize}"
+                            th:selected="${pageSize} == ${selectedPageSize}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-4" style="text-align: center;">
+                <nav aria-label="Page navigation example mx-auto">
+                    <ul th:if="${listaSocios.totalPages != 1}" class="pagination pagination-circle pg-blue">
+                        <li th:class="${listaSocios.number == 0} ? disabled" class="page-item disabled">
+                            <a th:href="@{/socios/(pageSize=${selectedPageSize}, page=1, nombre=${param.nombre})}" class="page-link">First</a>
+                        </li>
+
+                        <li th:class="${listaSocios.number == 0} ? disabled" class="page-item disabled"></li>
+                        <a th:href="@{/socios/(pageSize=${selectedPageSize}, page=${listaSocios.number}, nombre=${param.nombre})}" class="page-link" aria-label="Previous">
+                            <span aria-hidden="true">&larr;</span>
+                        </a>
+                        </li>
+
+                        <li th:class="${listaSocios.number == (page - 1)} ? 'active pointer-disabled'" class="page-item active" th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
+                            <a th:href="@{/socios/(pageSize=${selectedPageSize}, page=${page}, nombre=${param.nombre})}" class="page-link" th:text="${page}">1</a>
+                        </li>
+
+                        <li th:class="${listaSocios.number + 1 == listaSocios.totalPages} ? disabled" class="page-item">
+                            <a th:href="@{/socios/(pageSize=${selectedPageSize}, page=${listaSocios.number + 2}, nombre=${param.nombre})}" class="page-link">&rarr;</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="col-4"></div>
+        </div>
+
+
+        <div class="row aling-self-center">
+            <div class="col-12">
+                <a id="icono" href="" data-toggle="modal" data-target="#add"><img src="../../static/img/add.png" th:src="@{/img/add.png}" alt=""></a><span>Añadir
+                    Socio.</span>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- Modal add -->
+
+    <div class="modal" id="add">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Añadir Socio:</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <form th:action="@{/socios/add/submit}" th:object="${socio}" method="post">
+                        <input th:if="${socio.id != 0}" type="hidden" name="id" th:field="*{id}" />
+                        <label for="nombreSoci"> Nombre del Socio:</label>
+                        <input type="text" class="form-control" th:field="*{nombre}" />
+                        <label for="apillidos"> Apellidos:</label>
+                        <input type="text" class="form-control" th:field="*{apellidos}" />
+                        <label for="dni"> DNI:</label>
+                        <input type="text" class="form-control" th:field="*{dni}" id="dni" name="dni" required />
+                        <label for="cuota"> Cuota:</label>
+                        <input class="form-control" type="number" step="any" name="" th:field="*{cuota}" />
+                        <label for="email"> Email:</label>
+                        <input class="form-control" type="email" name="" required th:field="*{email}" />
+                        <label for="admin"> Administrador:</label>
+                        <input type="radio" name="si" id="radio-0" value="true" th:field="*{admin}">Si
+                        <input type="radio" name="no" id="radio-1" value="false" th:field="*{admin}">No
+                        </br>
+                        <label for="password">Contraseña</label>
+                        <input type="password" class="form-control" id="pwd" th:field="*{password}" onkeyup="validatePassword(this.value);">
+                        <div style="height: 13px;">
+                            <span id="msg"></span>
+                        </div>
+                        </br>
+                        <input type="submit" class="btn btn-danger" />
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <footer th:replace="fragment/footer.html :: footer"></footer>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script th:src="@{/js/appSocios.js}"></script>
+    <script th:src="@{/js/password.js}"></script>
+</body>
+
+</html>

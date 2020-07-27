@@ -1,0 +1,172 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
+
+<head>
+    <title>Eventos</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="../../static/css/css.css" th:href="@{/css/css.css}">
+</head>
+
+<body>
+    <header th:replace="fragment/header.html :: header"></header>
+    <div th:replace="fragment/login.html :: login"></div>
+
+    <div class="row mx-auto" id="icono">
+        <div class="col-12 col-lg-4"></div>
+        <div class="col-12 col-lg-4">
+            <form th:action="@{/eventos/buscar}" th:object="${buscar}" method="post">
+                <label for="buscar"></label>
+                <input type="text" value="Buscar por Nombre" class="form-control" style="width: 60%;display: inline-block; margin-top:40px;" maxlength="" th:field="*{nombre}" />
+                <button type="submit" class="border-0" style="display: inline-block; background: none;"><img
+						src="/img/buscar.png"></button>
+            </form>
+        </div>
+        <div class="col-12 col-lg-4"></div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-5" th:each="evento : ${listaEventos}" id="listCer">
+            <div class="col-12 text-center"><span th:text="${evento.nombre}"></span></div>
+            <div class="row">
+                <div class="col-4"> <span th:text="${evento.fecha}"></span></div>
+                <div class="col-8"> <span th:text="${evento.descripcion}"></span></div>
+            </div>
+            <div class="row" id="precioBlack">
+                <div class="col-3">Nº Plazas:</br><span th:text="${evento.nPlazas}"></span></div>
+                <div class="col-3">Precio:</br><span th:text="${evento.precio}"></span></div>
+                <div class="col-3">Plazas Reser.</br><span th:text="${evento.socios.size()}"></span></div>
+                <div class="col-3 pt-2" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_USER')" th:if="${evento.fecha >= hoy && evento.nPlazas > evento.socios.size()}">
+                    <a th:href="@{/eventos/reserva/{id}(id=${evento.id})}"><button type="button"
+							class="btn btn-light aling-self-center">Reservar</button></a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4" id="icono" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a href="#" data-toggle="modal" data-target="#delete" th:attr="data-target='#modalBorrar'+${evento.id}"><img src="/img/borrar.png" alt=""></a>
+                    <!--Modal Borrar Usuario-->
+
+                    <div class="modal fade" id="delete" th:id="modalBorrar+${evento.id}">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title text-dark">¿Estás seguro?</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+
+                                    <a th:href="@{/eventos/borrar/{id}(id=${evento.id})}"><button type="button"
+											class="btn ">Eliminar</button></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4" id="icono" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a href="#" th:href="@{/eventos/editar/{id}(id=${evento.id})}"><img src="/img/editar.png" alt=""></a>
+                </div>
+                <div class="col-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3">
+            <div class="form-group col-md-1">
+                <select sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_USER')" class="form-control pagination" id="pageSizeSelect" style="min-width: 100px;">
+                    <option th:each="pageSize : ${pageSizes}" th:text="${pageSize}"
+                        th:value="${pageSize}"
+                        th:selected="${pageSize} == ${selectedPageSize}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="col-4" style="text-align: center;">
+            <nav aria-label="Page navigation example mx-auto">
+                <ul th:if="${listaEventos.totalPages != 1}" class="pagination pagination-circle pg-blue">
+                    <li th:class="${listaEventos.number == 0} ? disabled" class="page-item disabled">
+                        <a th:href="@{/eventos(pageSize=${selectedPageSize}, page=1)}" class="page-link">First</a>
+                    </li>
+
+                    <li th:class="${listaEventos.number == 0} ? disabled" class="page-item disabled"></li>
+                    <a th:href="@{/eventos(pageSize=${selectedPageSize}, page=${listaEventos.number})}" class="page-link" aria-label="Previous">
+                        <span aria-hidden="true">&larr;</span>
+                    </a>
+                    </li>
+
+                    <li th:class="${listaEventos.number == (page - 1)} ? 'active pointer-disabled'" class="page-item active" th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
+                        <a th:href="@{/eventos(pageSize=${selectedPageSize}, page=${page})}" class="page-link" th:text="${page}">1</a>
+                    </li>
+
+                    <li th:class="${listaEventos.number + 1 == listaEventos.totalPages} ? disabled" class="page-item">
+                        <a th:href="@{/eventos(pageSize=${selectedPageSize}, page=${listaEventos.number + 2})}" class="page-link">&rarr;</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="col-4"></div>
+    </div>
+
+    </div>
+    <div class="row">
+        <div class="row" sec:authorize="hasRole('ROLE_ADMIN')">
+            <div class="col-3"></div>
+            <div class="col-3" id="icono">
+                <a href="" data-toggle="modal" data-target="#add"><img src="../../static/img/add.png" th:src="@{/img/add.png}" alt=""></a><span>Añadir
+					Evento</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal add -->
+
+    <div class="modal" id="add">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Añadir Evento:</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <form th:action="@{/eventos/submit}" th:object="${evento}" method="post">
+                        <input th:if="${evento.id != 0}" type="hidden" name="id" th:field="*{id}" />
+                        <label for="nombreCer"> Nombre del Evento:</label>
+                        <input type="text" class="form-control" th:field="*{nombre}" />
+                        <label for="marcaCer"> Fecha:</label>
+                        <input type="date" class="form-control" th:field="*{fecha}" />
+                        <label for="despricion"> Descripción:</label>
+                        <input type="text" class="form-control" th:field="*{descripcion}" />
+                        <label for="pvp"> Precio:</label>
+                        <input class="form-control" type="number" step="any" name="" th:field="*{precio}" />
+                        <label for="precioSoci"> Nº Plazas:</label>
+                        <input class="form-control" type="number" name="" th:field="*{nPlazas}" />
+                        </br>
+                        <input type="submit" class="btn btn-danger" name="enviar" value="Guardar" />
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="fragment/footer.html :: footer"></footer>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script th:src="@{/js/appEventos.js}"></script>
+</body>
+
+</html>

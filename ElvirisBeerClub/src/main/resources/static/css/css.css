@@ -1,0 +1,218 @@
+html,
+body {
+    overflow-x: hidden;
+    background-color: rgb(201, 199, 199);
+}
+
+.jumbotron {
+    border-radius: 0%;
+    padding: 0%;
+    height: 100%;
+    border-bottom: 3px solid;
+    border-bottom-color: red;
+    background-image: url(../img/fondoHeader.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+.jumbotron h2 {
+    text-align: right;
+    font-size: small;
+    color: white;
+}
+
+.jumbotron a {
+    float: right;
+    font-size: small;
+    color: white;
+    text-decoration: none;
+}
+
+.container {
+    width: 100%;
+    height: 95px;
+}
+
+.bg-light {
+    background-color: transparent!important;
+    z-index: 3;
+}
+
+.nav-link {
+    color: white!important;
+}
+
+.navbar-nav li {
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+#logobeer {
+    height: 150px;
+    width: 300px;
+    float: auto;
+}
+
+#logo {
+    margin: 10px;
+    height: 100px;
+}
+
+footer {
+    padding: 20px;
+    background-image: url(../img/fondoFooter.png);
+}
+
+#logoblanco {
+    float: auto;
+}
+
+footer p {
+    width: 100%;
+    margin: 30px;
+    text-align: center;
+    color: white;
+    font-size: 15px;
+}
+
+#redes img {
+    float: auto;
+    height: 40px;
+}
+
+.carousel {
+    z-index: 2;
+}
+
+.carousel-inner {
+    width: auto;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.carousel-item img {
+    width: 40%;
+    border-radius: 5%;
+}
+
+.caja {
+    padding: 15px;
+    border: 3px solid;
+    border-color: red;
+    border-radius: 5%;
+    background-color: rgb(117, 163, 250);
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    width: 80%;
+    height: auto;
+}
+
+#listCer {
+    border-collapse: collapse;
+    text-align: center;
+    padding: 0%;
+    font-size: large;
+    color: white;
+    border: 3px solid;
+    border-color: red;
+    margin: 50px;
+    width: 90%;
+    background-image: url(../img/fondoCervezas.jpg);
+    background-size: 100% 100%;
+}
+
+#listCer p {
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+#icono img {
+    width: 40px;
+}
+
+#precioBlack {
+    border-collapse: collapse;
+    margin: 0%;
+    border: 1px solid;
+    border-color: white;
+    background-color: rgba(0, 0, 0, 0.493);
+    max-width: none;
+}
+
+.caja p {
+    text-align: center;
+}
+
+@media screen and (max-width: 991px) {
+    .bg-light {
+        background-color: black!important;
+    }
+}
+
+#tabla h1 {
+    margin-top: 15px;
+    text-align: center;
+}
+
+#tabla {
+    font-size: 22px;
+    text-align: center;
+    margin: 50px;
+    background-color: rgb(0, 0, 0);
+}
+
+@media screen and (max-width: 700px) {
+    #tabla {
+        font-size: 12px;
+    }
+}
+
+#tabla tr {
+    padding-right: 7px;
+    padding-left: 7px;
+}
+
+#tabla td {
+    padding-right: 7px;
+    padding-left: 7px;
+    max-width: 600px;
+}
+
+#tabla th {
+    background-color: rgb(0, 0, 0);
+}
+
+#tabla tbody tr:nth-child(odd) {
+    background-color: rgb(29, 29, 28);
+}
+
+#tabla tbody tr:nth-child(even) {
+    background-color: rgb(0, 0, 0);
+}
+
+#tabla tbody tr:nth-child(odd):hover {
+    background-color: rgb(77, 76, 76);
+}
+
+#tabla tbody tr:nth-child(even):hover {
+    background-color: rgb(77, 76, 76);
+}
+
+#tabla td img {
+    width: 30px;
+}
+
+.caja img {
+    margin: 10px;
+    width: 30px;
+}
+
+#cerve {
+    background: none;
+    border: none;
+    max-width: 170px;
+    max-height: 200px;
+}
